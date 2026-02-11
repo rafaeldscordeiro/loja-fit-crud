@@ -33,3 +33,47 @@ exports.criarProduto = (req, res) => {
   return res.status(201).json(novoProduto);
 };
 
+exports.buscarProdutoPorId = (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const produto = produtos.find(p => p.id === id);
+
+  if (!produto) {
+    return res.status(404).json({ error: "produto não encontrado" });
+  }
+
+  res.json(produto);
+};
+
+exports.atualizarProduto = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { nome, tipo, preco, estoque } = req.body;
+
+  const produto = produtos.find(p => p.id === id);
+
+  if (!produto) {
+    return res.status(404).json({ error: "produto não encontrado" });
+  }
+
+  if (nome !== undefined) produto.nome = nome;
+  if (tipo !== undefined) produto.tipo = tipo;
+  if (preco !== undefined) produto.preco = preco;
+  if (estoque !== undefined) produto.estoque = estoque;
+
+  res.json(produto);
+};
+
+exports.deletarProduto = (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const index = produtos.findIndex(p => p.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "produto não encontrado" });
+  }
+
+  produtos.splice(index, 1);
+
+  res.status(204).send();
+};
+
