@@ -1,18 +1,12 @@
 const pool = require("../db/connection");
 
-let produtos = [
-  { id: 1, nome: "Bermuda Fit Preta", tipo: "BERMUDA", preco: 79.9, estoque: 10 },
-  { id: 2, nome: "Regata Dry Fit", tipo: "REGATA", preco: 49.9, estoque: 15 }
-];
-
 exports.listarProdutos = async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM produtos ORDER BY id");
     res.json(result.rows);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "erro ao buscar produtos" });
-  }
+  return res.status(500).json({ error: "erro interno do servidor" });
+}
 };
 
 exports.criarProduto = async (req, res) => {
@@ -21,6 +15,18 @@ exports.criarProduto = async (req, res) => {
 
     if (!nome || !tipo || preco === undefined || estoque === undefined) {
       return res.status(400).json({ error: "nome, tipo, preco e estoque são obrigatórios" });
+    }
+
+    if (!["BERMUDA", "REGATA"].includes(tipo)) {
+      return res.status(400).json({ error: "tipo deve ser BERMUDA ou REGATA" });
+    }
+
+    if (typeof preco !== "number" || preco <= 0) {
+      return res.status(400).json({ error: "preco deve ser número > 0" });
+    }
+
+    if (!Number.isInteger(estoque) || estoque < 0) {
+      return res.status(400).json({ error: "estoque deve ser inteiro >= 0" });
     }
 
     const result = await pool.query(
@@ -32,12 +38,26 @@ exports.criarProduto = async (req, res) => {
       [nome, tipo, preco, estoque]
     );
 
-    res.status(201).json(result.rows[0]);
+    return res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "erro ao criar produto" });
+    console.error("Erro ao criar produto:", error);
+
+    if (error.code === "23514") {
+      return res.status(400).json({ error: "dados inválidos (restrição do banco)" });
+    }
+
+    if (error.code === "23502") {
+      return res.status(400).json({ error: "campo obrigatório ausente" });
+    }
+
+    if (error.code === "23505") {
+      return res.status(400).json({ error: "registro duplicado" });
+    }
+
+    return res.status(500).json({ error: "erro interno do servidor" });
   }
 };
+
 
 
 exports.buscarProdutoPorId = async (req, res) => {
@@ -57,22 +77,52 @@ exports.buscarProdutoPorId = async (req, res) => {
 };
 
 
-exports.atualizarProduto = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { nome, tipo, preco, estoque } = req.body;
+exports.atualizarProduto = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { nome, tipo, preco, estoque } = req.body;
 
-  const produto = produtos.find(p => p.id === id);
+    // Validações (só quando o campo vem no body)
+    if (tipo !== undefined && !["BERMUDA", "REGATA"].includes(tipo)) {
+      return res.status(400).json({ error: "tipo deve ser BERMUDA ou REGATA" });
+    }
 
-  if (!produto) {
-    return res.status(404).json({ error: "produto não encontrado" });
+    if (preco !== undefined && (typeof preco !== "number" || preco <= 0)) {
+      return res.status(400).json({ error: "preco deve ser número > 0" });
+    }
+
+    if (estoque !== undefined && (!Number.isInteger(estoque) || estoque < 0)) {
+      return res.status(400).json({ error: "estoque deve ser inteiro >= 0" });
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE produtos
+      SET
+        nome = COALESCE($2, nome),
+        tipo = COALESCE($3, tipo),
+        preco = COALESCE($4, preco),
+        estoque = COALESCE($5, estoque)
+      WHERE id = $1
+      RETURNING *
+      `,
+      [id, nome ?? null, tipo ?? null, preco ?? null, estoque ?? null]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "produto não encontrado" });
+    }
+
+    return res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Erro ao atualizar produto:", error);
+
+    if (error.code === "23514") {
+      return res.status(400).json({ error: "dados inválidos (restrição do banco)" });
+    }
+
+    return res.status(500).json({ error: "erro interno do servidor" });
   }
-
-  if (nome !== undefined) produto.nome = nome;
-  if (tipo !== undefined) produto.tipo = tipo;
-  if (preco !== undefined) produto.preco = preco;
-  if (estoque !== undefined) produto.estoque = estoque;
-
-  res.json(produto);
 };
 
 exports.deletarProduto = async (req, res) => {
@@ -90,9 +140,9 @@ exports.deletarProduto = async (req, res) => {
 
     res.status(204).send();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "erro ao deletar produto" });
-  }
+  console.error("Erro ao deletar produto:", error);
+  return res.status(500).json({ error: "erro interno do servidor" });
+}
 };
 
 
