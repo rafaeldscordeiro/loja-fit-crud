@@ -1,8 +1,20 @@
-📦 Loja Fit CRUD API
+🚀 Loja Fit API
+API REST com Node.js, PostgreSQL e Testes Automatizados com Cypress
 
-API REST desenvolvida para estudo de backend e automação de testes, simulando uma loja fitness com venda de bermudas e regatas.
 
-🚀 Tecnologias
+📌 Sobre o Projeto
+
+API REST para gerenciamento de produtos (bermudas e regatas), com foco em:
+
+Integração com banco relacional
+
+Validação de regras de negócio
+
+Tratamento correto de erros HTTP
+
+Automação de testes de API
+
+🧰 Stack
 
 Node.js
 
@@ -10,80 +22,60 @@ Express
 
 PostgreSQL
 
-Cypress (testes automatizados)
+Cypress (E2E)
 
-Postman (testes manuais)
+Postman
 
-📌 Funcionalidades
+Git
+
+⚙️ Funcionalidades
 
 Criar produto
 
 Listar produtos
 
-Buscar produto por ID
+Buscar por ID
 
 Atualizar produto
 
 Deletar produto
 
-Validações de regra de negócio
+Validações (tipo, preço, estoque)
 
-Tratamento adequado de erros (400 / 404 / 500)
+Tratamento de erros (400 / 404 / 500)
 
-Testes automatizados E2E com Cypress
+🧪 Testes Automatizados
 
-🗄️ Banco de Dados
+Cobertura implementada:
 
-Tabela produtos:
+✅ Health check
 
-id (SERIAL)
+✅ CRUD completo
 
-nome (TEXT)
+✅ Cenários negativos
 
-tipo (BERMUDA ou REGATA)
+Executar:
 
-preco (NUMERIC > 0)
+npm run cy:open
 
-estoque (INT >= 0)
+ou
 
-criado_em (TIMESTAMP)
-
-▶️ Como rodar o projeto
+npm run cy:run
+▶️ Como Executar
 1️⃣ Instalar dependências
 npm install
-2️⃣ Configurar banco PostgreSQL
-
-Criar database:
-
+2️⃣ Criar banco
 CREATE DATABASE loja_fit;
 
-Executar schema da tabela produtos.
+Executar o schema.sql.
 
 3️⃣ Iniciar API
 npm start
 
-Servidor rodando em:
+Disponível em:
 
 http://localhost:3000
-🧪 Testes Automatizados (Cypress)
-
-Abrir interface:
-
-npm run cy:open
-
-Rodar em modo headless:
-
-npm run cy:run
-
-Cobertura:
-
-Health check
-
-CRUD completo
-
-Cenários negativos (400 / 404)
-
-📂 Estrutura do Projeto
+📂 Estrutura
 src/
   controllers/
   routes/
@@ -92,14 +84,14 @@ cypress/
   e2e/
 🎯 Objetivo
 
-Projeto desenvolvido com foco em:
+Demonstrar competências em:
 
-Estruturação de API REST
+Desenvolvimento de API REST
 
-Integração com banco relacional
+Integração com PostgreSQL
 
-Boas práticas de validação
+Validações de backend
 
-Automação de testes de API
+Automação de testes de API com Cypress
 
-Construção de portfólio para QA / Testes Automatizados
+Organização profissional de projeto versionado
