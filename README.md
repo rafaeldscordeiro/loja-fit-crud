@@ -1,6 +1,8 @@
 🚀 Loja Fit API
 API REST com Node.js, PostgreSQL e Testes Automatizados com Cypress
 
+------------------------------
+
 
 📌 Sobre o Projeto
 
@@ -13,6 +15,7 @@ Validação de regras de negócio
 Tratamento correto de erros HTTP
 
 Automação de testes de API
+------------------------------
 
 🧰 Stack
 
@@ -28,6 +31,7 @@ Postman
 
 Git
 
+------------------------------
 ⚙️ Funcionalidades
 
 Criar produto
@@ -43,7 +47,7 @@ Deletar produto
 Validações (tipo, preço, estoque)
 
 Tratamento de erros (400 / 404 / 500)
-
+------------------------------
 🧪 Testes Automatizados
 
 Cobertura implementada:
@@ -56,18 +60,15 @@ Cobertura implementada:
 
 Executar:
 
-npm run cy:open
+npm run cy:open ou npm run cy:run
 
-ou
-
-npm run cy:run
 ▶️ Como Executar
 1️⃣ Instalar dependências
 npm install
 2️⃣ Criar banco
 CREATE DATABASE loja_fit;
 
-Executar o schema.sql.
+--Executar o schema.sql.
 
 3️⃣ Iniciar API
 npm start
@@ -75,13 +76,16 @@ npm start
 Disponível em:
 
 http://localhost:3000
+------------------------------
 📂 Estrutura
+
 src/
   controllers/
   routes/
   db/
 cypress/
   e2e/
+  ------------------------------
 🎯 Objetivo
 
 Demonstrar competências em:
